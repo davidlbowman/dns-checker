@@ -91,11 +91,11 @@ function Home({
 		setIsPropagated(null)
 
 		const checkInterval = setInterval(async () => {
-			const result = await checkDnsPropagation({
+			const { fullyPropagated } = await checkDnsPropagation({
 				ipAddress: ipAddress as IPv4Address,
 				domain,
 			})
-			if (result) {
+			if (fullyPropagated) {
 				clearInterval(checkInterval)
 				setIsPropagated(true)
 				setIsChecking(false)
