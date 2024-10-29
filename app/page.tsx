@@ -13,6 +13,7 @@ import { type IPv4Address, checkDnsPropagation } from "@/utils/dnsChecker"
 import { CheckCircle2, Wifi, XCircle } from "lucide-react"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
+import { Suspense } from "react"
 
 function SearchParams() {
 	const searchParams = useSearchParams()
@@ -21,10 +22,25 @@ function SearchParams() {
 	return { ipAddress, domain }
 }
 
-export default function Home() {
+function SearchParamsWrapper() {
 	const params = SearchParams()
-	const [ipAddress, setIpAddress] = useState<string>(params.ipAddress || "")
-	const [domain, setDomain] = useState<string>(params.domain || "")
+	return <Home initialIp={params.ipAddress} initialDomain={params.domain} />
+}
+
+export default function Page() {
+	return (
+		<Suspense>
+			<SearchParamsWrapper />
+		</Suspense>
+	)
+}
+
+function Home({
+	initialIp,
+	initialDomain,
+}: { initialIp?: string | null; initialDomain?: string | null }) {
+	const [ipAddress, setIpAddress] = useState<string>(initialIp || "")
+	const [domain, setDomain] = useState<string>(initialDomain || "")
 	const [isChecking, setIsChecking] = useState<boolean>(false)
 	const [isPropagated, setIsPropagated] = useState<boolean | null>(null)
 	const audioContext = useRef<AudioContext | null>(null)
