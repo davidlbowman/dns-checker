@@ -11,11 +11,20 @@ import {
 import { Input } from "@/components/ui/input"
 import { type IPv4Address, checkDnsPropagation } from "@/utils/dnsChecker"
 import { CheckCircle2, Wifi, XCircle } from "lucide-react"
+import { useSearchParams } from "next/navigation"
 import { useEffect, useRef, useState } from "react"
 
-export default function Component() {
-	const [ipAddress, setIpAddress] = useState<string>("")
-	const [domain, setDomain] = useState<string>("")
+function SearchParams() {
+	const searchParams = useSearchParams()
+	const ipAddress = searchParams.get("ip")
+	const domain = searchParams.get("domain")
+	return { ipAddress, domain }
+}
+
+export default function Home() {
+	const params = SearchParams()
+	const [ipAddress, setIpAddress] = useState<string>(params.ipAddress || "")
+	const [domain, setDomain] = useState<string>(params.domain || "")
 	const [isChecking, setIsChecking] = useState<boolean>(false)
 	const [isPropagated, setIsPropagated] = useState<boolean | null>(null)
 	const audioContext = useRef<AudioContext | null>(null)
