@@ -19,12 +19,19 @@ function SearchParams() {
 	const searchParams = useSearchParams()
 	const ipAddress = searchParams.get("ip")
 	const domain = searchParams.get("domain")
-	return { ipAddress, domain }
+	const autocheck = searchParams.get("autocheck") === "true"
+	return { ipAddress, domain, autocheck }
 }
 
 function SearchParamsWrapper() {
 	const params = SearchParams()
-	return <Home initialIp={params.ipAddress} initialDomain={params.domain} />
+	return (
+		<Home
+			initialIp={params.ipAddress}
+			initialDomain={params.domain}
+			autocheck={params.autocheck}
+		/>
+	)
 }
 
 export default function Page() {
@@ -38,7 +45,12 @@ export default function Page() {
 function Home({
 	initialIp,
 	initialDomain,
-}: { initialIp?: string | null; initialDomain?: string | null }) {
+	autocheck,
+}: {
+	initialIp?: string | null
+	initialDomain?: string | null
+	autocheck?: boolean
+}) {
 	const [ipAddress, setIpAddress] = useState<string>(initialIp || "")
 	const [domain, setDomain] = useState<string>(initialDomain || "")
 	const [isChecking, setIsChecking] = useState<boolean>(false)
@@ -56,6 +68,12 @@ function Home({
 			}
 		}
 	}, [])
+
+	useEffect(() => {
+		if (autocheck && initialIp && initialDomain) {
+			handleCheck()
+		}
+	}, [autocheck, initialIp, initialDomain])
 
 	const playBeep = () => {
 		if (audioContext.current) {
