@@ -1,13 +1,15 @@
+"use server"
+
 import * as dns from "node:dns"
 
-type IPv4Address = `${number}.${number}.${number}.${number}`
+export type IPv4Address = `${number}.${number}.${number}.${number}`
 
 interface DnsCheckOptions {
 	ipAddress: IPv4Address
 	domain: string
 }
 
-export default async function checkDnsPropagation(
+export async function checkDnsPropagation(
 	options: DnsCheckOptions,
 ): Promise<boolean> {
 	try {
